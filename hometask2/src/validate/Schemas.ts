@@ -44,5 +44,5 @@ export const schemaUpdateUser = Joi.object({
 
 export const schemaGetUsersList = Joi.object({
   str: Joi.string().required(),
-  limit: Joi.number().integer().required(),
+  limit: Joi.number().integer(),
 });

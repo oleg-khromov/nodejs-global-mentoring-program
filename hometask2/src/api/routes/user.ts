@@ -15,16 +15,16 @@ const route = Router();
 const validator = createValidator();
 
 export default (app: Router) => {
-  app.use('/user', route);
+  app.use('/users', route);
 
   route.get(
-    '/',
+    '/:id',
     validator.query(schema.schemaGetUser),
     (req: ValidatedRequest<ISchemas.GetUserRequestSchema>, res: Response) => {
       const { id } = req.query;
       const user = findUserById(id);
 
-      if (user.length) {
+      if (user) {
         res.json({ user }).status(200).end();
       } else {
         res.status(404).end('User not found');
@@ -33,7 +33,7 @@ export default (app: Router) => {
   );
 
   route.post(
-    '/new',
+    '/:id',
     validator.body(schema.schemaCreateUser),
     (req: ValidatedRequest<ISchemas.CreateUserRequestSchema>, res: Response) => {
       const { login } = req.body;
@@ -48,15 +48,15 @@ export default (app: Router) => {
     }
   );
 
-  route.post(
-    '/edit',
+  route.put(
+    '/:id',
     validator.body(schema.schemaUpdateUser),
     (req: ValidatedRequest<ISchemas.UpdateUserRequestSchema>, res: Response) => {
       const { id } = req.body;
       const user = findUserById(id);
       let flag = false;
 
-      if (user.length) {
+      if (user) {
         flag = updateUser(req.body);
       }
 
@@ -69,7 +69,7 @@ export default (app: Router) => {
   );
 
   route.get(
-    '/list',
+    '/',
     validator.query(schema.schemaGetUsersList),
     (req: ValidatedRequest<ISchemas.GetUsersListRequestSchema>, res: Response) => {
       const { str, limit } = req.query;
@@ -85,15 +85,15 @@ export default (app: Router) => {
     }
   );
 
-  route.post(
-    '/delete',
+  route.delete(
+    '/:id',
     validator.body(schema.schemaDeleteUser),
     (req: ValidatedRequest<ISchemas.DeleteUserRequestSchema>, res: Response) => {
       const { id } = req.body;
       const user = findUserById(id);
       let flag = false;
 
-      if (user.length) {
+      if (user) {
         flag = deleteUser(id);
       }
 
