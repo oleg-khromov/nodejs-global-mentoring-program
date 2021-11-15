@@ -1,4 +1,4 @@
-import { IUser } from './IUser';
+import { IUser, IUserCreateInput } from './IUser';
 import * as ISchemas from './Schemas';
 
-export { IUser, ISchemas };
+export { IUser, IUserCreateInput, ISchemas };
