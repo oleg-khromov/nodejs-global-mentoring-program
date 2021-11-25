@@ -1,15 +1,14 @@
 import { Router, Response } from 'express';
 import { ValidatedRequest, createValidator } from 'express-joi-validation';
-import { ISchemas, IUser } from '../../interfaces';
+import { ISchemas } from '../../interfaces';
 import * as schema from '../../validate/Schemas';
 import {
   findUserById,
-  createNewUser,
-  findUserByLogin,
+  createUser,
   updateUser,
   deleteUser,
   getAutoSuggestUsers,
-} from '../../store';
+} from '../../services/user.service';
 
 const route = Router();
 const validator = createValidator();
@@ -19,31 +18,28 @@ export default (app: Router) => {
 
   route.get(
     '/:id',
-    validator.query(schema.schemaGetUser),
-    (req: ValidatedRequest<ISchemas.GetUserRequestSchema>, res: Response) => {
-      const { id } = req.query;
-      const user = findUserById(id);
+    validator.body(schema.schemaGetUser),
+    async (req: ValidatedRequest<ISchemas.GetUserRequestSchema>, res: Response) => {
+      const { id } = req.body;
 
-      if (user) {
-        res.json({ user }).status(200).end();
-      } else {
-        res.status(404).end('User not found');
+      try {
+        const user = await findUserById(id);
+        res.status(200).json({ status: 200, data: user });
+      } catch (error: any) {
+        res.status(404).json({ status: 404, message: error.message });
       }
     }
   );
 
   route.post(
-    '/:id',
+    '/',
     validator.body(schema.schemaCreateUser),
-    (req: ValidatedRequest<ISchemas.CreateUserRequestSchema>, res: Response) => {
-      const { login } = req.body;
-      const user = findUserByLogin(login);
-
-      if (!user.length) {
-        const newUser = createNewUser(req.body);
-        res.json({ user: newUser }).status(200).end();
-      } else {
-        res.status(404).end('User with that login is already exist');
+    async (req: ValidatedRequest<ISchemas.CreateUserRequestSchema>, res: Response) => {
+      try {
+        const user = await createUser(req.body);
+        res.status(200).json({ status: 200, data: user });
+      } catch (error: any) {
+        res.status(404).json({ status: 400, message: error.message });
       }
     }
   );
@@ -51,36 +47,27 @@ export default (app: Router) => {
   route.put(
     '/:id',
     validator.body(schema.schemaUpdateUser),
-    (req: ValidatedRequest<ISchemas.UpdateUserRequestSchema>, res: Response) => {
-      const { id } = req.body;
-      const user = findUserById(id);
-      let flag = false;
-
-      if (user) {
-        flag = updateUser(req.body);
-      }
-
-      if (flag) {
-        res.status(200).end(`User ${id} was updated`);
-      } else {
-        res.status(404).end('User not found');
+    async (req: ValidatedRequest<ISchemas.UpdateUserRequestSchema>, res: Response) => {
+      try {
+        const user = await updateUser(req.body);
+        res.status(200).json({ status: 200, data: user, message: `User ${user.id} was updated` });
+      } catch (error: any) {
+        res.status(404).json({ status: 404, message: error.message });
       }
     }
   );
 
   route.get(
     '/',
-    validator.query(schema.schemaGetUsersList),
-    (req: ValidatedRequest<ISchemas.GetUsersListRequestSchema>, res: Response) => {
-      const { str, limit } = req.query;
-      let users: IUser[] = [];
+    validator.body(schema.schemaGetUsersList),
+    async (req: ValidatedRequest<ISchemas.GetUsersListRequestSchema>, res: Response) => {
+      const { str, limit } = req.body;
 
-      users = getAutoSuggestUsers(str, limit);
-
-      if (users.length) {
-        res.json({ users }).status(200);
-      } else {
-        res.status(404).end('Not found matches results');
+      try {
+        const users = await getAutoSuggestUsers(str, limit);
+        res.status(200).json({ status: 200, data: users });
+      } catch (error: any) {
+        res.status(404).json({ status: 404, message: error.message });
       }
     }
   );
@@ -88,19 +75,14 @@ export default (app: Router) => {
   route.delete(
     '/:id',
     validator.body(schema.schemaDeleteUser),
-    (req: ValidatedRequest<ISchemas.DeleteUserRequestSchema>, res: Response) => {
+    async (req: ValidatedRequest<ISchemas.DeleteUserRequestSchema>, res: Response) => {
       const { id } = req.body;
-      const user = findUserById(id);
-      let flag = false;
 
-      if (user) {
-        flag = deleteUser(id);
-      }
-
-      if (flag) {
-        res.status(200).end(`User ${id} was deleted`);
-      } else {
-        res.status(404).end('User not found');
+      try {
+        const user = await deleteUser(id);
+        res.status(200).json({ status: 200, data: user.id, message: `User ${id} was deleted` });
+      } catch (error: any) {
+        res.status(404).json({ status: 404, message: error.message });
       }
     }
   );

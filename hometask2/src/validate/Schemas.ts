@@ -1,15 +1,15 @@
 import Joi from 'joi';
 
 export const schemaGetUser = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.number().required(),
 });
 
 export const schemaDeleteUser = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.number().required(),
 });
 
 export const schemaCreateUser = Joi.object({
-  id: Joi.string(),
+  id: Joi.number(),
   login: Joi.string().required(),
   password: Joi.string()
     .pattern(new RegExp('^[a-zA-Z0-9]*$'))
@@ -26,7 +26,7 @@ export const schemaCreateUser = Joi.object({
 });
 
 export const schemaUpdateUser = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.number().required(),
   login: Joi.string().required(),
   password: Joi.string()
     .pattern(new RegExp('^[a-zA-Z0-9]*$'))
