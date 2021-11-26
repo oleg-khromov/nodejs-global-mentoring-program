@@ -13,4 +13,20 @@ model User {
   password  String
   age       Int
   isDeleted Boolean? @default(false)
+  groups UserGroup[]
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  permissions  String[]
+  users UserGroup[]
+}
+
+model UserGroup {
+  group     Group   @relation(fields: [groupId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  groupId   Int      
+  user      User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId    Int  
+  @@id([groupId, userId])
 }

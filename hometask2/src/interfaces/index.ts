@@ -1,4 +1,6 @@
 import { IUser, IUserCreateInput } from './IUser';
-import * as ISchemas from './Schemas';
+import { IGroup, IGroupCreateInput } from './IGroup';
+import * as IUserSchemas from './IUserSchemas';
+import * as IGroupSchemas from './IGroupSchemas';
 
-export { IUser, IUserCreateInput, ISchemas };
+export { IUser, IUserCreateInput, IGroup, IGroupCreateInput, IUserSchemas, IGroupSchemas };
