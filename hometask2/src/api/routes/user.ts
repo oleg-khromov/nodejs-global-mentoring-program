@@ -9,6 +9,7 @@ import {
   deleteUser,
   getAutoSuggestUsers,
 } from '../../services/user.service';
+import logger from '../../utils/logger';
 
 const route = Router();
 const validator = createValidator();
@@ -19,7 +20,7 @@ export default (app: Router) => {
   route.get(
     '/:id',
     validator.body(schema.schemaGetUser),
-    async (req: ValidatedRequest<IUserSchemas.GetUserRequestSchema>, res: Response) => {
+    async (req: ValidatedRequest<IUserSchemas.GetUserRequestSchema>, res: Response, next) => {
       const { id } = req.body;
 
       try {
@@ -27,6 +28,7 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: user });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: GET, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -40,6 +42,9 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: user });
       } catch (error: any) {
         res.status(404).json({ status: 400, message: error.message });
+        logger.error(
+          `method: POST, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
+        );
       }
     }
   );
@@ -53,6 +58,7 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: user, message: `User ${user.id} was updated` });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: PUT, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -68,6 +74,7 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: users });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: GET, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -83,6 +90,9 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: user.id, message: `User ${id} was deleted` });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(
+          `method: DELETE, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
+        );
       }
     }
   );
