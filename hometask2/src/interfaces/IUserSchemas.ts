@@ -39,3 +39,10 @@ export interface GetUsersListRequestSchema extends ValidatedRequestSchema {
     limit: number;
   };
 }
+
+export interface GetUserByNameRequestSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    login: string;
+    password: string;
+  };
+}

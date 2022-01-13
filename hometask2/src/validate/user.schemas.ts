@@ -46,3 +46,11 @@ export const schemaGetUsersList = Joi.object({
   str: Joi.string().required(),
   limit: Joi.number().integer(),
 });
+
+export const schemaGetUserByName = Joi.object({
+  login: Joi.string().required(),
+  password: Joi.string()
+    .pattern(new RegExp('^[a-zA-Z0-9]*$'))
+    .message('Password must contains only letters and numbers')
+    .required(),
+});

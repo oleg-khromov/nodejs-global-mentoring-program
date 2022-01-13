@@ -9,6 +9,7 @@ import {
   deleteUser,
   getAutoSuggestUsers,
 } from '../../services/user.service';
+import { checkToken } from '../../services/auth.service';
 import logger from '../../utils/logger';
 
 const route = Router();
@@ -19,6 +20,7 @@ export default (app: Router) => {
 
   route.get(
     '/:id',
+    checkToken,
     validator.body(schema.schemaGetUser),
     async (req: ValidatedRequest<IUserSchemas.GetUserRequestSchema>, res: Response, next) => {
       const { id } = req.body;
@@ -35,6 +37,7 @@ export default (app: Router) => {
 
   route.post(
     '/',
+    checkToken,
     validator.body(schema.schemaCreateUser),
     async (req: ValidatedRequest<IUserSchemas.CreateUserRequestSchema>, res: Response) => {
       try {
@@ -51,6 +54,7 @@ export default (app: Router) => {
 
   route.put(
     '/:id',
+    checkToken,
     validator.body(schema.schemaUpdateUser),
     async (req: ValidatedRequest<IUserSchemas.UpdateUserRequestSchema>, res: Response) => {
       try {
@@ -65,6 +69,7 @@ export default (app: Router) => {
 
   route.get(
     '/',
+    checkToken,
     validator.body(schema.schemaGetUsersList),
     async (req: ValidatedRequest<IUserSchemas.GetUsersListRequestSchema>, res: Response) => {
       const { str, limit } = req.body;
@@ -81,6 +86,7 @@ export default (app: Router) => {
 
   route.delete(
     '/:id',
+    checkToken,
     validator.body(schema.schemaDeleteUser),
     async (req: ValidatedRequest<IUserSchemas.DeleteUserRequestSchema>, res: Response) => {
       const { id } = req.body;
