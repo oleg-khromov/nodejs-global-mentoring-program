@@ -29,7 +29,7 @@ const createToken = async (login: string, password: string) => {
   }
 
   const payload = { id: user.id, login: user.login };
-  const token = jwt.sign(payload, secret, { expiresIn: 600 });
+  const token = jwt.sign(payload, secret, { expiresIn: 60000 });
 
   return {
     user: payload,

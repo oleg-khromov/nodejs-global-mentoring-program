@@ -12,7 +12,7 @@ import {
 import { checkToken } from '../../services/auth.service';
 import logger from '../../utils/logger';
 
-const route = Router();
+export const route = Router();
 const validator = createValidator();
 
 export default (app: Router) => {
@@ -41,10 +41,11 @@ export default (app: Router) => {
     validator.body(schema.schemaCreateUser),
     async (req: ValidatedRequest<IUserSchemas.CreateUserRequestSchema>, res: Response) => {
       try {
+        console.log('req', req);
         const user = await createUser(req.body);
         res.status(200).json({ status: 200, data: user });
       } catch (error: any) {
-        res.status(404).json({ status: 400, message: error.message });
+        res.status(404).json({ status: 404, message: error.message });
         logger.error(
           `method: POST, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
         );
