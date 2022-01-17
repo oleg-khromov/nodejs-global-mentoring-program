@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { ValidatedRequest, createValidator } from 'express-joi-validation';
 import { IGroupSchemas } from '../../interfaces';
 import * as schema from '../../validate/group.schemas';
@@ -10,6 +10,7 @@ import {
   getAllGroups,
 } from '../../services/group.service';
 import { addUsersToGroup } from '../../services/usergroup.service';
+import logger from '../../utils/logger';
 
 const route = Router();
 const validator = createValidator();
@@ -28,6 +29,7 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: group });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: GET, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -41,6 +43,9 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: group });
       } catch (error: any) {
         res.status(404).json({ status: 400, message: error.message });
+        logger.error(
+          `method: POST, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
+        );
       }
     }
   );
@@ -56,6 +61,7 @@ export default (app: Router) => {
           .json({ status: 200, data: group, message: `Group ${group.id} was updated` });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: PUT, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -69,6 +75,7 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: groups });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(`method: GET, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`);
       }
     }
   );
@@ -84,6 +91,9 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data: group.id, message: `Group ${id} was deleted` });
       } catch (error: any) {
         res.status(404).json({ status: 404, message: error.message });
+        logger.error(
+          `method: DELETE, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
+        );
       }
     }
   );
@@ -99,6 +109,9 @@ export default (app: Router) => {
         res.status(200).json({ status: 200, data });
       } catch (error: any) {
         res.status(404).json({ status: 400, message: error.message });
+        logger.error(
+          `method: POST, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
+        );
       }
     }
   );

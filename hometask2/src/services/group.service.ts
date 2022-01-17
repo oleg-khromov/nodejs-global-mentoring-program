@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { IGroup, IGroupCreateInput } from '../interfaces';
 import { deleteGroupOfUsers } from './usergroup.service';
+import logger from '../utils/logger';
 
 export const prisma = new PrismaClient();
 
@@ -9,6 +10,8 @@ const findGroupById = async (id: string) => {
     where: { id: Number(id) },
   });
 
+  logger.info(`Method findGroupById has been invoked with arguments: id=${id}`);
+
   if (!group) {
     throw Error('Group not found');
   }
@@ -16,14 +19,23 @@ const findGroupById = async (id: string) => {
   return group;
 };
 
-const findGroupByName = async (name: string) =>
-  await prisma.group.findUnique({
+const findGroupByName = async (name: string) => {
+  const group = await prisma.group.findUnique({
     where: { name },
   });
 
+  logger.info(`Method findGroupByName has been invoked with arguments: name=${name}`);
+
+  return group;
+};
+
 const createGroup = async (data: IGroupCreateInput) => {
-  const { name } = data;
+  const { name, permissions } = data;
   const group = await findGroupByName(name);
+
+  logger.info(
+    `Method createGroup has been invoked with arguments: name=${name}, permissions=${permissions}`
+  );
 
   if (group) {
     throw Error('Group with that name is already exist');
@@ -36,6 +48,11 @@ const createGroup = async (data: IGroupCreateInput) => {
 
 const updateGroup = async ({ id, ...data }: IGroup) => {
   const group = await findGroupById(String(id));
+  const { name, permissions } = data;
+
+  logger.info(
+    `Method updateGroup has been invoked with arguments: id=${id}, name=${name}, permissions=${permissions}`
+  );
 
   if (!group) {
     throw Error('Group not found');
@@ -52,6 +69,8 @@ const updateGroup = async ({ id, ...data }: IGroup) => {
 const deleteGroup = async (id: string) => {
   const group = await findGroupById(id);
 
+  logger.info(`Method deleteGroup has been invoked with arguments: id=${id}`);
+
   if (!group) {
     throw Error('Group not found');
   }
@@ -67,6 +86,8 @@ const deleteGroup = async (id: string) => {
 
 const getAllGroups = async () => {
   const groups = await prisma.group.findMany();
+
+  logger.info(`Method getAllGroups has been invoked. This method doens't have any arguments`);
 
   return groups;
 };
