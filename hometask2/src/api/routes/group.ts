@@ -10,6 +10,7 @@ import {
   getAllGroups,
 } from '../../services/group.service';
 import { addUsersToGroup } from '../../services/usergroup.service';
+import { checkToken } from '../../services/auth.service';
 import logger from '../../utils/logger';
 
 const route = Router();
@@ -20,6 +21,7 @@ export default (app: Router) => {
 
   route.get(
     '/:id',
+    checkToken,
     validator.body(schema.schemaGetGroup),
     async (req: ValidatedRequest<IGroupSchemas.GetGroupRequestSchema>, res: Response) => {
       const { id } = req.body;
@@ -36,6 +38,7 @@ export default (app: Router) => {
 
   route.post(
     '/',
+    checkToken,
     validator.body(schema.schemaCreateGroup),
     async (req: ValidatedRequest<IGroupSchemas.CreateGroupRequestSchema>, res: Response) => {
       try {
@@ -52,6 +55,7 @@ export default (app: Router) => {
 
   route.put(
     '/:id',
+    checkToken,
     validator.body(schema.schemaUpdateGroup),
     async (req: ValidatedRequest<IGroupSchemas.UpdateGroupRequestSchema>, res: Response) => {
       try {
@@ -68,6 +72,7 @@ export default (app: Router) => {
 
   route.get(
     '/',
+    checkToken,
     validator.body(schema.schemaGetGroupsList),
     async (req: ValidatedRequest<IGroupSchemas.GetGroupsListRequestSchema>, res: Response) => {
       try {
@@ -82,6 +87,7 @@ export default (app: Router) => {
 
   route.delete(
     '/:id',
+    checkToken,
     validator.body(schema.schemaDeleteGroup),
     async (req: ValidatedRequest<IGroupSchemas.DeleteGroupRequestSchema>, res: Response) => {
       const { id } = req.body;
@@ -100,6 +106,7 @@ export default (app: Router) => {
 
   route.post(
     '/users/',
+    checkToken,
     validator.body(schema.schemaAddUsersToGroup),
     async (req: ValidatedRequest<IGroupSchemas.AddUsersToGroupRequestSchema>, res: Response) => {
       const { groupId, userIds } = req.body;

@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import config from './config';
 import routes from './api';
 import logger from './utils/logger';
@@ -6,6 +7,7 @@ import logger from './utils/logger';
 const app = express();
 const { port } = config;
 
+app.use(cors());
 app.use(express.json());
 
 // app.all('*', (req: Request, res: Response, next) => {
