@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { IUser, IUserCreateInput } from '../interfaces';
+import { deleteUserInGroups } from './usergroup.service';
 
 export const prisma = new PrismaClient();
 
@@ -58,6 +59,8 @@ const deleteUser = async (id: string) => {
   const deletedUser = await prisma.user.delete({
     where: { id: Number(id) },
   });
+
+  await deleteUserInGroups(id);
 
   return deletedUser;
 };
