@@ -5,7 +5,7 @@ import * as schema from '../../validate/user.schemas';
 import { createToken } from '../../services/auth.service';
 import logger from '../../utils/logger';
 
-const route = Router();
+export const route = Router();
 const validator = createValidator();
 
 export default (app: Router) => {
@@ -18,12 +18,12 @@ export default (app: Router) => {
       try {
         const { login, password } = req.body;
         const { user, token } = await createToken(login, password);
-        res.status(200).json({ status: 200, data: { user, token } });
+        return res.status(200).json({ status: 200, data: { user, token } });
       } catch (error: any) {
-        res.status(404).json({ status: 400, message: error.message });
         logger.error(
           `method: POST, arguments: ${JSON.stringify(req.body)}, text: ${error.message}`
         );
+        return res.status(404).json({ status: 400, message: error.message });
       }
     }
   );

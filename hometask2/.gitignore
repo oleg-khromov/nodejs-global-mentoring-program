@@ -4,4 +4,6 @@
 
 .env
 
+coverage
+
 package-lock.json
